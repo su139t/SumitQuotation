@@ -1,0 +1,201 @@
+﻿@model IEnumerable<SumitQuotation.Models.Quotation_View>
+
+@{
+    ViewBag.Title = "Index";
+}
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.2/css/jquery.dataTables.min.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.4/css/buttons.dataTables.min.css" />
+<script type="text/javascript" src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.3.4/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.3.4/js/buttons.html5.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.3.4/js/buttons.print.min.js"></script>
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.8/js/jquery.dataTables.min.js" defer="defer"></script>
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+    <div class="colorcss" style="background-color:darkslateblue; text-align: center; padding: 4px 0px 1.2px 0px; "><h4>LIST</h4></div>
+    <div class="d-flex justify-content-between pt-2">
+        <div class="d-flex">
+        </div>
+        <div>  @Html.ActionLink("Create New", "Create", "", new { @class = "btn btn-success  btncreate", @style = "margin-left:30px" }) <br /> <input type="button" id="BulkDelete" class="btn btn-danger btncreate my-2 " value="Delete Selected" /></div>
+    </div>
+    <table class="table text-center" id="Quotationtable">
+        <thead class="text-center ">
+            <tr>
+                <th style="padding-left:29px">
+                    <input type="checkbox" class="checkborder" name="SelectMul" id="SelectMul" />
+                </th>
+                <th style="padding-left:100px">Quotation No.</th>
+                <th style="padding-left:100px">Quotation Date</th>
+                <th style="padding-left:80px">Customer</th>
+                <th style="padding-left:70px">Action</th>
+            </tr>
+        </thead>
+        <tbody class="mytable">
+            @Html.Partial("_FilterList", Model)
+        </tbody>
+    </table>
+</body>
+</html>
+<script>
+    $(document).ready(function () {
+        showTable();
+        $('#Seachtext').on('click', function () {
+            var Searchtext = $('#SearchValue').val();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("_FilterList", "Quotation")',
+                data: { SearchText: Searchtext },
+                dataType: "html",
+                success: function (result) {
+                    showTable();
+                    var table = $("table#Quotationtable > tbody.mytable");
+                    $('#Quotationtable tbody').empty();
+                    $("#Quotationtable TBODY TR").each(function () {
+                        $(this).remove();
+                    });
+                    $('#Quotationtable tbody').append(result);
+                    $.each(result, function (i, item) {
+                        table.append(`<tr>
+                    <td>${item.QuotationNo}</td>
+                    <td>${item.QuotationDate.ToString("dd-MM-yyyy")}</td>
+                    <td>${item.CustomerName}</td>
+                  </tr>`)
+                        showTable();
+                    });
+                }
+            });
+        })
+
+        $('#SelectMul').on('click', function () {
+            let checkboxes = document.getElementsByTagName('input');
+            let val = null;
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].type == 'checkbox') {
+                    if (val == null) {
+                        val = checkboxes[i].checked;
+                    }
+                    else {
+                        checkboxes[i].checked = val;
+                    }
+                }
+            }
+        });
+
+        $('#BulkDelete').on('click', function () {
+            let val = [];
+            $("input[name='SelectOne']:checked").each(function () {
+                val.push($(this).val());
+            });
+            $.ajax({
+                type: 'POST',
+                url: '/Quotation/BulkDelete',
+                data: { 'ids': val },
+                 success: function (response) {
+                     if (response == 'success') {
+                         location.reload();
+                     }
+                },
+                error: function (response) {
+                    console.log("errorrrr");
+                }
+            })
+        })
+
+        function showTable() {
+            btn = [
+                {
+                    extend: 'pdfHtml5',
+                    pageSize: 'TABLOID',
+                    exportOptions: {
+                        columns: [1, 2, 3]
+                    }
+                },
+                {
+                    extend: 'excelHtml5',
+                    exportOptions: {
+                        columns: [1, 2, 3]
+                    }
+                }
+            ];
+
+            $('#Quotationtable').dataTable({
+                "iDisplayLength": 5,
+                'lengthMenu': [[5, 10, 25, 50, 100, 200, 400], [5, 10, 25, 50, 100, 200, 400]],
+                "pagingType": 'simple_numbers',
+                "lengthChange": true,
+                "bSort": false,
+                searching: true,
+                order: [[2, 'asc']],
+
+                dom: "<'row headpos'<'col-sm-2 'B><'col-sm-6 'l><'col-sm-4 'f>>" +
+                    "<'row'<'col-sm-12 tablelist'tr>>" +
+                    "<'row bottompos'<'col-sm-5'i><'col-sm-7'p>>",
+                buttons: btn
+
+            });
+
+            $(".buttons-html5").attr("class", "btn btn-secondary buttons-html5");
+            $(".dt-buttons").attr("class", "dt-buttons btn-group flex-wrap");
+            $(".dataTables_paginate").css("color", "#007bff");
+
+        }
+
+    })
+</script>
+<style>
+    .colorcss{
+        color:white;
+    }
+    .btncreate {
+        padding: 3px 8px;
+    }
+    .checkborder {
+        width: 17px;
+        height: 17px;
+        /*-webkit-appearance: none;*/
+        /*      font-size: 2rem;
+        padding: 0.1rem;
+        border: 0.25rem solid black;
+        border-radius:2px;*/
+    }
+ 
+    .headpos {
+        position: relative;
+        top: -75px;
+        width:80%;
+    }
+
+    .bottompos {
+        position: relative;
+        top: -40px;
+    }
+
+    .tablelist {
+        position: relative;
+        top: -40px;
+    }
+
+    thead th {
+        text-align: center;
+    }
+
+    .dataTables_length label {
+        position: relative;
+        left: 150px;
+        width:100%
+    }
+
+    #Quotationtable_filter label {
+        position: relative;
+        left: -615px;
+    }
+</style>

@@ -1,0 +1,494 @@
+﻿@model SumitQuotation.Models.tbl_Quotation
+@{
+    ViewBag.Title = "Create";
+}
+@if (Model.Quotation_Id == 0)
+{
+    <div style="background-color: darkslateblue; color:white ; text-align: center; padding: 4px 0px 1.2px 0px; "><h4>CREATE</h4></div>
+}
+else
+{
+    <div style="background-color: darkslateblue; color: white; text-align: center; padding: 4px 0px 1.2px 0px; "><h4>EDIT</h4></div>
+}
+<html>
+<head>
+    <title>
+    </title>
+</head>
+<body>
+    @using (Html.BeginForm("Create", "Quotation", FormMethod.Post))
+    {
+        <div class="container">
+            <div class="master">
+                <div class="d-flex  justify-content-between pt-2">
+                    <h5 class="pt-1">Quotation</h5>
+                    @Html.ActionLink("Back to List", "Index", "", new { @class = "btn btn-warning " })
+                </div>
+                <table class="">
+                    <tr>
+                        <td>
+                            <input type="hidden" id="Quotation_Id" value="@Model.Quotation_Id" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="d-flex justify-content-start">
+                            <label for="" style="margin:5px 120px 0px 0px" class="form-control-static">Quotation No :</label>&nbsp;
+                            @if (Model.Quotation_Id > 0)
+                            {
+                                <input type="number" id="QuotationNo" class="form-control" placeholder="Enter Quotation No" value="@Model.QuotationNo" readonly />
+                            }
+                            else
+                            {
+                                <input type="number" id="QuotationNo" class="form-control" placeholder="Enter Quotation No" value="@ViewBag.QuotationAutoNo" readonly />
+                            }
+                            &nbsp;  <span class="error">Quotation No required</span>
+                            <span id="spanmess"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="d-flex justify-content-start">
+                            <label for="" style="margin:5px 57px 0px 0px; width : 200px" class="form-control-static">Quotation Date :</label>
+                            <input type="text" id="QuotationDate" name="QuotationDate" class="form-control" value="@string.Format("{0:dd-MM-yyyy}" , Model.QuotationDate)" readonly="readonly" />
+                            &nbsp;<span class="error">Valid Quotation Date required (ex. dd-mm-yyyy)</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="d-flex justify-content-start">
+                            <label for="" style="margin:5px 148px 0px 0px" class="form-control-static">Customer :</label> &nbsp;
+                            @Html.DropDownList("CustomerId", null, "Select Customer", htmlAttributes: new { @ID = "CustomerId", @Name = "CustomerId", @class = "form-control form-select", @style = "width:100%" })
+                            &nbsp; <span class="error">Valid Customer Name required </span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="details">
+                <h5 class="d-flex">Quotation Detail &nbsp; <span id="Itemerror"> </span> <span class="error"> <h6 class="p-1">Atleast Insert One Record  </h6> </span></h5>
+                <table style="width:100%">
+                    <tr>
+                        <td><label for="" class="form-control-static">Items </label></td>
+                        <td><label for="" class="form-control-static">Quantity </label></td>
+                        <td> <label for="" class="form-control-static">Rate </label></td>
+                        <td> <label for="" class="form-control-static">Total Amount </label></td>
+                    </tr>
+                    <tr class="">
+                        <td>
+                            @Html.DropDownList("ItemId", null, "Select Item", htmlAttributes: new { @ID = "ItemId", @Name = "ItemId", @class = "form-control form-select inputdropdown ", @style = "width:70%" })
+                            <span class="error">Item Name required</span>
+                            <span class="itemvali">Item Name Already Exist</span>
+                        </td>
+                        <td>
+                            <input type="number" name="Quantity" placeholder="Enter Quantity" id="Quantity" onkeydown="if(event.key==='.'){event.preventDefault();}" oninput="event.target.value = event.target.value.replace(/[^0-9]*/g,'');" class="form-control inputwight" />
+                            <span class="error">Valid Quantity required</span>
+                        </td>
+                        <td>
+                            <input type="number" name="Rate" placeholder="Enter Rate" id="Rate" class="inputwight form-control" />
+                            <span class="error">Valid Rate required</span>
+                        </td>
+                        <td>
+                            <input type="number" name="TotalAmount" placeholder="Total Amount" id="TotalAmount" class="inputwight form-control" readonly />
+                        </td>
+
+                        <td>
+                            <input type="button" id="AddDetail" value="Save Detail" class="btn btn-primary btnadd" />
+                        </td>
+                        <td>
+                            <input type="hidden" name="QuotationDetail_Id" id="QuotationDetail_Id" />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="form-group" id="tblDetailList">
+                @Html.Partial("_DetailList", Model.tbl_QuotationDetail.AsEnumerable())
+            </div>
+            <div style="padding:10px 0px; text-align:right" class="d-flex justify-content-end">
+                <label class="pt-2">Total Rows Amount :-</label>
+                <label id="TotalRowAmount" class="p-2"></label>
+                <input id="submit" type="button" value="Save" style="padding:10px 20px" class="btn btn-success" onclick="" />
+            </div>
+        </div>
+    }
+</body>
+</html>
+@section Scripts{
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js" type="text/javascript"></script>
+    <link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="Stylesheet" type="text/css" />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            var Itemalready = [];
+
+            $('#Rate, #Quantity').keyup(function () {
+                if (!($('#Quantity').val().trim() != '' && !isNaN($('#Quantity').val().trim()) && !($('#Quantity').val().trim() <= 0))) {
+                    $('#TotalAmount').val("");
+                }
+                else if (!($('#Rate').val().trim() != '' && !isNaN($('#Rate').val().trim()) && !($('#Rate').val().trim() <= 0))) {
+                    $('#TotalAmount').val("");
+                }
+                else {
+                    var Rate = parseFloat($('#Rate').val());
+                    var Quantity = parseInt($('#Quantity').val());
+                $('#TotalAmount').val(Rate * Quantity);
+                }
+            });
+
+            $("#QuotationDate").datepicker({
+                showOn: 'button',
+                buttonImageOnly: true,
+                buttonImage: "/Uploads/calendar.gif",
+                dateFormat: 'dd-mm-yy'
+            });
+
+            var QuotationItems = [];
+            QuotationItems = @Html.Raw(Json.Encode(TempData["DetailData"]));
+            if (QuotationItems == null) {
+                QuotationItems = [];
+            }
+
+            console.log("all detail data", QuotationItems);
+
+            function Onloadgetdata(QuotationItems) {
+                for (var i = 0; i < QuotationItems.length ; i++) {
+                    Itemalready.push({
+                        itemname : String(QuotationItems[i].ItemId),
+                    });
+                }
+            }
+            Onloadgetdata(QuotationItems);
+
+            TotalAmt(QuotationItems);
+            Clear_DetailControls();
+
+            $('#AddDetail').click(function () {
+                var items = {};
+                var isValidItem = true;
+                if (!($('#ItemId').val().trim() != '' && !isNaN($('#ItemId').val().trim()))) {
+                    isValidItem = false;
+                    $('#ItemId').siblings('span.error').css('visibility', 'visible');
+                    $('#ItemId').siblings('span.itemvali').css('visibility', 'hidden');                }
+                else {
+                    $('#ItemId').siblings('span.error').css('visibility', 'hidden');
+                }
+                if (!($('#Quantity').val().trim() != '' && !isNaN($('#Quantity').val().trim()) && !($('#Quantity').val().trim() <= 0))) {
+                    isValidItem = false;
+                    $('#Quantity').siblings('span.error').css('visibility', 'visible');
+                }
+                else {
+                    $('#Quantity').siblings('span.error').css('visibility', 'hidden');
+                }
+                if (!($('#Rate').val().trim() != '' && !isNaN($('#Rate').val().trim()) && !($('#Rate').val().trim() <= 0))) {
+                    isValidItem = false;
+                    $('#Rate').siblings('span.error').css('visibility', 'visible');
+                }
+                else {
+                    $('#Rate').siblings('span.error').css('visibility', 'hidden');
+                }
+                if (isValidItem) {
+                    $('#Itemerror').siblings('span.error').css('visibility', 'hidden');
+                    var ItemId = $('#ItemId').val();
+                    var count = 0;
+                    if (QuotationItems.length == 0) {
+                        items.itemname = ItemId;
+                    }
+                    else {
+                        const isInputExist = Itemalready.some((obj) => obj.itemname === ItemId);
+                        if (isInputExist) {
+                              count = 1;
+                          }
+                          else {
+                              count = 0;
+                              items.itemname = ItemId;
+                          }
+                    };
+                    if (count == 0) {
+                        $('#ItemId').siblings('span.itemvali').css('visibility', 'hidden');
+                        AddDetails(items);
+                    }
+                    else {
+                        $('#ItemId').siblings('span.itemvali').css('visibility', 'visible');
+                    }
+                }
+            });
+
+            function TotalAmt(QuotationItems) {
+                var totalprice = 0;
+                $('#TotalRowAmount').html('');
+                $.each(QuotationItems , function (index, value) {
+                    if (value.IsDeleted != true) {
+                        totalprice += value.TotalAmount;
+                    }
+                });
+                $('<label>').text(totalprice).appendTo("#TotalRowAmount");
+            }
+
+            function AddDetails(items) {
+
+                var DetailId = parseInt($("#QuotationDetail_Id").val());
+                if (isNaN(DetailId)) {
+                    DetailId = 0;
+                }
+                var ItemId = $('#ItemId').val();
+                var Quantity = parseInt($('#Quantity').val().trim());
+                var Rate = parseFloat($('#Rate').val().trim());
+                var TotalAmount = parseFloat($('#TotalAmount').val().trim());
+                var ItemName = $('#ItemId :selected').text();
+                var m_ObjDetail = {};
+                if (DetailId > 0) {
+                    m_ObjDetail = getObjectFromArray(DetailId);
+                }
+                m_ObjDetail.QuotationDetail_Id = DetailId;
+                m_ObjDetail.ItemId = ItemId;
+                m_ObjDetail.Quantity = Quantity;
+                m_ObjDetail.Rate = Rate;
+                m_ObjDetail.TotalAmount = TotalAmount;
+                m_ObjDetail.ItemName = ItemName;
+                    if (DetailId == 0) {
+                        var minId = Math.min(...QuotationItems.map(item => item.QuotationDetail_Id));
+                        if (minId > 0) {
+                            minId = -1;
+                            m_ObjDetail.QuotationDetail_Id = minId;
+                        }
+                        else {
+                            m_ObjDetail.QuotationDetail_Id = minId - 1;
+                        }
+                        QuotationItems.push(m_ObjDetail);
+                        Itemalready.push(items);
+                    }
+                    else {
+                        var idx = getIndexFromArray(DetailId);
+                        QuotationItems[idx] = m_ObjDetail;
+                        Itemalready.push(items);
+                    }
+                    TotalAmt(QuotationItems);
+                    Clear_DetailControls();
+                    RefreshGrid();
+            }
+
+            $(document).on('click', '.clsDeleteChildRow_Event', function (event) {
+                if (confirm("Are you sure want to delete this record?") == false) {
+                    return;
+                }
+                var did = 0;
+                var m_DetailId = parseInt(this.getAttribute("tag"));
+                var m_detailObject = getObjectFromArray(m_DetailId);
+                did = m_detailObject.ItemId
+                Itemalready = Itemalready.filter(function (obj) {
+                    return obj.itemname != did;
+                });
+                if (isNaN(m_DetailId)) {
+                    alert("Not a valid value, please contact to system administrator.");
+                    Clear_DetailControls();
+                    return;
+                }
+                if (m_DetailId == 0) {
+                    var minId = Math.min(...QuotationItems.map(item => item.QuotationDetail_Id));
+                    if (minId > 0) {
+                        minId = -1;
+                        m_ObjDetail.QuotationDetail_Id = minId;
+                    }
+                    else {
+                        var idx = m_ObjDetail.QuotationDetail_Id = minId - 1;
+                        QuotationItems[idx].IsDeleted = true;
+                    }
+                    TotalAmt(QuotationItems);
+                }
+                else {
+                    var idx = getIndexFromArray(m_DetailId);
+                    QuotationItems[idx].IsDeleted = true;
+                }
+
+                console.log("isud delete", Itemalready);
+                TotalAmt(QuotationItems);
+                RefreshGrid();
+                Clear_DetailControls();
+            });
+
+            $('#submit').click(function () {
+                    var isAllValid = true;
+                    if ($('#QuotationNo').val().trim() == '') {
+                        $('#QuotationNo').siblings('span.error').css('visibility', 'visible');
+                        isAllValid = false;
+                    }
+                    else {
+                        $('#QuotationNo').siblings('span.error').css('visibility', 'hidden');
+                    }
+                    if ($('#QuotationDate').val().trim() == '') {
+                        $('#QuotationDate').siblings('span.error').css('visibility', 'visible');
+                        isAllValid = false;
+                    }
+                    else {
+                        $('#QuotationDate').siblings('span.error').css('visibility', 'hidden');
+                    }
+                    if ($('#CustomerId').val().trim() == '') {
+                        $('#CustomerId').siblings('span.error').css('visibility', 'visible');
+                        isAllValid = false;
+                    }
+                    else {
+                        $('#CustomerId').siblings('span.error').css('visibility', 'hidden');
+                    }
+                    let newtArray = QuotationItems.filter(function (item) {
+                        return item.IsDeleted == true;
+                    });
+                    if (newtArray.length == QuotationItems.length) {
+                        $('#Itemerror').siblings('span.error').css('visibility', 'visible');
+                        isAllValid = false;
+                    }
+                if (isAllValid && confirm("Are you sure you want to Save this record?")) {
+                        RefreshGrid();
+                     if (isAllValid) {
+                        var startDate = $('#QuotationDate').val();
+                        var formattedDate = moment(startDate, 'DD-MM-YYYY').format('MM-DD-YYYY');
+                        var data = {
+                            Quotation_Id: $('#Quotation_Id').val().trim(),
+                            QuotationNo: $('#QuotationNo').val().trim(),
+                            QuotationDate: formattedDate,
+                            CustomerId: $('#CustomerId').val().trim(),
+                         }
+                        $.ajax({
+                            url: '/Quotation/Create',
+                            type: "POST",
+                            data: JSON.stringify(data),
+                            dataType: "JSON",
+                            contentType: "application/json",
+                            success: function (response) {
+                                console.log("success");
+                                document.location.href = '/Quotation/Index'
+                            },
+                            error: function (response) {
+                                console.log(response);
+                            }
+                        });
+                    }
+                }
+            });
+
+            $(document).on('click', '.clsEditChildRow_Event', function (event) {
+                try {
+                    var eid = 0;
+                    var m_DetailId = parseInt(this.getAttribute("tag"));
+                    if (isNaN(m_DetailId)) {
+                        alert("Not a valid value, please contact to system administrator.");
+                        Clear_DetailControls();
+                        return;
+                    }
+                    var m_detailObject = getObjectFromArray(m_DetailId);
+                    eid = m_detailObject.ItemId
+                    Itemalready = Itemalready.filter(function (obj) {
+                        return obj.itemname != eid;
+                    });
+                    console.log("isud edit", Itemalready );
+                    $("#QuotationDetail_Id").val(m_detailObject.QuotationDetail_Id);
+                    $("#ItemId").val(m_detailObject.ItemId);
+                    $("#Quantity").val(m_detailObject.Quantity);
+                    $("#Rate").val(m_detailObject.Rate);
+                    $("#TotalAmount").val(m_detailObject.TotalAmount);
+                }
+                catch (e) {
+                    alert("Error on edit click. ");
+                }
+            });
+
+            function getObjectFromArray(DetailId) {
+                return QuotationItems.find(x => x.QuotationDetail_Id == DetailId);
+            }
+
+            function getIndexFromArray(DetailId) {
+                return QuotationItems.findIndex(x => x.QuotationDetail_Id == DetailId);
+            }
+
+            function RefreshGrid() {
+                $.ajax({
+                    type: "POST",
+                    url: "/Quotation/GetDetailData_FromAray",
+                    data: { detailArray: QuotationItems },
+                    async: false,
+                    success: function (result) {
+                        $("#tblDetailList").html(result);
+                    }
+               });
+            }
+
+            function Clear_DetailControls() {
+                $('#ItemId').val("");
+                $('#Quantity').val("");
+                $('#Rate').val("");
+                $('#TotalAmount').val("");
+                $('#QuotationDetail_Id').val("");
+            }
+        });
+    </script>
+}
+
+<style>
+
+    .details td input.inputwight {
+        margin: 0px 5px;
+        width: 150px;
+    }
+
+    .btnadd {
+        width: 100px;
+    }
+
+    .details label {
+        margin: 0px 5px;
+        width: 150px;
+    }
+
+    .ui-datepicker-trigger {
+        height: 30px;
+        position: relative;
+        left: -37px;
+        top: 7px;
+    }
+
+    span.error {
+        display: block;
+        visibility: hidden;
+        color: red;
+        font-size: 90%;
+    }
+
+    span.itemvali {
+        display: block;
+        visibility: hidden;
+        color: red;
+        font-size: 80%;
+        position: relative;
+        top: -20px;
+    }
+
+    tr.error {
+        background-color: rgba(255,0,0,0.35);
+    }
+
+    .container td {
+        vertical-align: top;
+        padding-bottom: 5px;
+    }
+
+    .tablecontainer table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .tablecontainer th, .tablecontainer td {
+        text-align: left;
+        padding: 5px;
+    }
+
+    .ui-widget {
+        font-size: 12px !important;
+    }
+
+    h5 {
+        padding: 0px;
+    }
+</style>

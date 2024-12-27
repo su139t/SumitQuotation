@@ -1,0 +1,209 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="QuotationDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="tbl_Customer">
+          <Key>
+            <PropertyRef Name="Customer_Id" />
+          </Key>
+          <Property Name="Customer_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CustomerName" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_Item">
+          <Key>
+            <PropertyRef Name="Item_Id" />
+          </Key>
+          <Property Name="Item_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ItemName" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_Quotation">
+          <Key>
+            <PropertyRef Name="Quotation_Id" />
+          </Key>
+          <Property Name="Quotation_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="QuotationNo" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="QuotationDate" Type="date" Nullable="false" />
+          <Property Name="CustomerId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_QuotationDetail">
+          <Key>
+            <PropertyRef Name="QuotationDetail_Id" />
+          </Key>
+          <Property Name="QuotationDetail_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="QuotationId" Type="int" Nullable="false" />
+          <Property Name="ItemId" Type="int" Nullable="false" />
+          <Property Name="Quantity" Type="numeric" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="Rate" Type="numeric" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="TotalAmount" Type="numeric" Precision="18" Scale="0" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'QuotationDB.dbo.Quotation_View' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Quotation_View">
+          <Key>
+            <PropertyRef Name="Quotation_Id" />
+            <PropertyRef Name="QuotationNo" />
+            <PropertyRef Name="QuotationDate" />
+            <PropertyRef Name="CustomerId" />
+          </Key>
+          <Property Name="Quotation_Id" Type="int" Nullable="false" />
+          <Property Name="QuotationNo" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="QuotationDate" Type="date" Nullable="false" />
+          <Property Name="CustomerId" Type="int" Nullable="false" />
+          <Property Name="CustomerName" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityContainer Name="QuotationDBModelStoreContainer">
+          <EntitySet Name="tbl_Customer" EntityType="Self.tbl_Customer" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Item" EntityType="Self.tbl_Item" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Quotation" EntityType="Self.tbl_Quotation" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_QuotationDetail" EntityType="Self.tbl_QuotationDetail" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Quotation_View" EntityType="Self.Quotation_View" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Quotation_View].[Quotation_Id] AS [Quotation_Id], 
+    [Quotation_View].[QuotationNo] AS [QuotationNo], 
+    [Quotation_View].[QuotationDate] AS [QuotationDate], 
+    [Quotation_View].[CustomerId] AS [CustomerId], 
+    [Quotation_View].[CustomerName] AS [CustomerName]
+    FROM [dbo].[Quotation_View] AS [Quotation_View]</DefiningQuery>
+          </EntitySet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="QuotationDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="tbl_Customer">
+          <Key>
+            <PropertyRef Name="Customer_Id" />
+          </Key>
+          <Property Name="Customer_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CustomerName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_Item">
+          <Key>
+            <PropertyRef Name="Item_Id" />
+          </Key>
+          <Property Name="Item_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ItemName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_Quotation">
+          <Key>
+            <PropertyRef Name="Quotation_Id" />
+          </Key>
+          <Property Name="Quotation_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="QuotationNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="QuotationDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="CustomerId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_QuotationDetail">
+          <Key>
+            <PropertyRef Name="QuotationDetail_Id" />
+          </Key>
+          <Property Name="QuotationDetail_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="QuotationId" Type="Int32" Nullable="false" />
+          <Property Name="ItemId" Type="Int32" Nullable="false" />
+          <Property Name="Quantity" Type="Decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="Rate" Type="Decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="TotalAmount" Type="Decimal" Precision="18" Scale="0" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Quotation_View">
+          <Key>
+            <PropertyRef Name="Quotation_Id" />
+            <PropertyRef Name="QuotationNo" />
+            <PropertyRef Name="QuotationDate" />
+            <PropertyRef Name="CustomerId" />
+          </Key>
+          <Property Name="Quotation_Id" Type="Int32" Nullable="false" />
+          <Property Name="QuotationNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="QuotationDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="CustomerId" Type="Int32" Nullable="false" />
+          <Property Name="CustomerName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityContainer Name="QuotationDBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="tbl_Customer" EntityType="Self.tbl_Customer" />
+          <EntitySet Name="tbl_Item" EntityType="Self.tbl_Item" />
+          <EntitySet Name="tbl_Quotation" EntityType="Self.tbl_Quotation" />
+          <EntitySet Name="tbl_QuotationDetail" EntityType="Self.tbl_QuotationDetail" />
+          <EntitySet Name="Quotation_View" EntityType="Self.Quotation_View" />
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="QuotationDBModelStoreContainer" CdmEntityContainer="QuotationDBEntities">
+          <EntitySetMapping Name="tbl_Customer">
+            <EntityTypeMapping TypeName="QuotationDBModel.tbl_Customer">
+              <MappingFragment StoreEntitySet="tbl_Customer">
+                <ScalarProperty Name="Customer_Id" ColumnName="Customer_Id" />
+                <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Item">
+            <EntityTypeMapping TypeName="QuotationDBModel.tbl_Item">
+              <MappingFragment StoreEntitySet="tbl_Item">
+                <ScalarProperty Name="Item_Id" ColumnName="Item_Id" />
+                <ScalarProperty Name="ItemName" ColumnName="ItemName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Quotation">
+            <EntityTypeMapping TypeName="QuotationDBModel.tbl_Quotation">
+              <MappingFragment StoreEntitySet="tbl_Quotation">
+                <ScalarProperty Name="Quotation_Id" ColumnName="Quotation_Id" />
+                <ScalarProperty Name="QuotationNo" ColumnName="QuotationNo" />
+                <ScalarProperty Name="QuotationDate" ColumnName="QuotationDate" />
+                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_QuotationDetail">
+            <EntityTypeMapping TypeName="QuotationDBModel.tbl_QuotationDetail">
+              <MappingFragment StoreEntitySet="tbl_QuotationDetail">
+                <ScalarProperty Name="QuotationDetail_Id" ColumnName="QuotationDetail_Id" />
+                <ScalarProperty Name="QuotationId" ColumnName="QuotationId" />
+                <ScalarProperty Name="ItemId" ColumnName="ItemId" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="Rate" ColumnName="Rate" />
+                <ScalarProperty Name="TotalAmount" ColumnName="TotalAmount" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Quotation_View">
+            <EntityTypeMapping TypeName="QuotationDBModel.Quotation_View">
+              <MappingFragment StoreEntitySet="Quotation_View">
+                <ScalarProperty Name="Quotation_Id" ColumnName="Quotation_Id" />
+                <ScalarProperty Name="QuotationNo" ColumnName="QuotationNo" />
+                <ScalarProperty Name="QuotationDate" ColumnName="QuotationDate" />
+                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
+                <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

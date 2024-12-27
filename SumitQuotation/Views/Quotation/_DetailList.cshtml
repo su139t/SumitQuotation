@@ -1,0 +1,42 @@
+﻿@model IEnumerable<SumitQuotation.Models.tbl_QuotationDetail>
+
+<div class="panel panel-default">
+    <div class="panel-heading"><h5>Detail List</h5></div>
+    <div class="panel-body">
+        <table class="table">
+            <tr>
+                <th>Item Name</th>
+                <th>Quantity</th>
+                <th>Rate</th>
+                <th>Total Amount</th>
+                <th>Action</th>
+            </tr>
+            @foreach (var item in Model)
+            {
+                if (item.IsDeleted)
+                {
+                    continue;
+                }
+                <tr>
+                    <td>
+                        @item.ItemName
+                    </td>
+                    <td>
+                        @((int)item.Quantity)
+                    </td>
+                    <td>
+                        @((float)item.Rate)
+                    </td>
+                    <td>
+                        @((float)item.TotalAmount)
+                    </td>
+                    <td>
+                        <a href="#" class="clsEditChildRow_Event" tag="@item.QuotationDetail_Id" >Edit</a>
+                        |<a href="#" class="clsDeleteChildRow_Event" tag="@item.QuotationDetail_Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+
+</div>
